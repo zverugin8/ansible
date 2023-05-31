@@ -1,0 +1,51 @@
+---
+# Description
+- name: Advanced task
+  hosts: webservers
+  gather_facts: true
+  vars_files:
+    - /home/ansible/confidential
+  tasks:
+    - name: Deploy webserver
+      ansible.builtin.package:
+        name: httpd
+        state: present
+      notify: httpd service
+      tags:
+        - base-install
+
+    - name: Deply template vhost.conf.j2
+      ansible.builtin.template:
+        src: /home/ansible/vhost.conf.j2
+        dest: /etc/httpd/conf.d/vhost.conf
+      notify: httpd service
+      tags:
+        - vhost
+
+    - name: Deply template htpasswd.j2
+      ansible.builtin.template:
+        src: /home/ansible/htpasswd.j2
+        dest: /etc/httpd/conf/htpasswd
+      notify: httpd service
+      tags:
+        - vhost
+- name: Description
+  # Comment
+  ansible.builtin.command:
+    cmd: /opt/data-job.sh
+  async: 3600  # Set the async timeout to 1 hour (adjust as needed)
+  poll: 0      # Do not poll for status
+  tags:
+     - data-job
+
+  handlers:
+    - name: Restart HTTPD and enable it
+      ansible.builtin.service:
+        enabled: true
+        name: httpd
+        state: restarted
+      listen: httpd service
+
+  
+  
+    

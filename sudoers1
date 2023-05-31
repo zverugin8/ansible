@@ -1,0 +1,7 @@
+%sysopr  172.18.162.192=(root:root) ALL
+Host_Alias WEBSERVERS = alpha.example.org, beta.example.org
+Host_Alias DBSERVERS = DB01.INTRANET.MYDOMAIN.NET,DB02.INTRANET.MYDOMAIN.NET
+%httpd WEBSERVERS = /bin/su - webuser
+%dba DBSERVERS = /bin/su - dbuser
+
+

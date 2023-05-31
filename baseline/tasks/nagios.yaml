@@ -1,0 +1,4 @@
+- ansible.builtin.package:
+  name: nrpe
+  state: latest
+

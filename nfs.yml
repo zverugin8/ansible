@@ -1,0 +1,68 @@
+- name: Nfs
+ # NFS
+  hosts: nfs
+  gather_facts: true
+  become: true
+  vars:
+    share_path: /mnt/nfsroot
+  tasks:
+    - name: Install nfs-utils
+      ansible.builtin.package:
+        name: nfs-utils
+        state: present
+    - name: Start NFS service
+      # Comment
+      ansible.builtin.service:
+        name: nfs-server
+        enabled: true
+        state: started
+        # Export Nfs
+    - name: Deploy /etc/exports
+      ansible.builtin.template:
+        src: ./exports.j2
+        dest: /etc/exports
+        mode: '0666'
+      notify: exportfs
+  handlers:
+    - name: Exportfs
+      ansible.builtin.shell:
+        cmd: exportfs -a
+      listen: exportfs
+- name: Remote groups command
+ # remote
+  hosts: remote
+  gather_facts: true
+  become: true
+  vars:
+    nfs_ip: "{{ hostvars['nfs']['ansible_facts']['default_ipv4']['address'] }}"
+    nfs_hostname: "{{ hostvars['nfs']['ansible_facts']['nodename'] }}"
+  vars_files: 
+    - /home/ansible/user-list.txt
+  tasks:
+    - name: Print vars
+      ansible.builtin.debug:
+        var: nfs_ip
+    - name: Print vars1
+      ansible.builtin.debug:
+        var: nfs_hostname
+    - name: Deploy /etc/hosts
+      ansible.builtin.template:
+        src: ./etc.hosts.j2
+        dest: /etc/hosts
+        mode: '0666'
+    - name: Check if file exists
+      ansible.builtin.stat:
+        path: /opt/user-agreement.txt
+      register: file_stats
+
+    - name: Show file existence
+      ansible.builtin.debug:
+        msg: "File exists"
+      when: file_stats.stat.exists
+    - name: Create user
+      ansible.builtin.user:
+        name: "{{ item }}"
+      loop: "{{ users }}"
+      when: file_stats.stat.exists
+
+

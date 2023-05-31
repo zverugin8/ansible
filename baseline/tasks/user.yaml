@@ -1,0 +1,13 @@
+- ansible.builtin.user:
+    create_home: true
+    name: noc
+- ansible.posix.authorized_key:
+    key: "{{ lookup('file', 'noc_id_rsa.pub') }}"
+    state: present
+    user: noc
+
+
+
+    
+  
+

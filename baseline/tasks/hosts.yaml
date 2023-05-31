@@ -1,0 +1,5 @@
+- ansible.builtin.lineinfile:
+    line: "10.0.1.161 nagios.example.com"
+    path: /etc/hosts
+    state: present
+   

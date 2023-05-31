@@ -1,0 +1,17 @@
+- name: Run shell command with loop
+  hosts: localhost
+  gather_facts: false
+  vars:
+    my_list:
+      - item1
+      - item2
+      - item3
+  tasks:
+  - name: Execute command
+    command: "echo {{ item }}"
+    loop: "{{ my_list }}"
+    register: result
+
+  - name: Display output
+    ansible.builtin.debug:
+      var: result.stdout

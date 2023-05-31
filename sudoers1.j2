@@ -1,0 +1,7 @@
+%sysopr  {{ ansible_default_ipv4.address }}=(root:root) ALL
+Host_Alias WEBSERVERS = {{ groups['webservers']|join(', ') }}
+Host_Alias DBSERVERS = {{ groups['dbservers']|join(',')|upper }}
+%httpd WEBSERVERS = /bin/su - webuser
+%dba DBSERVERS = /bin/su - dbuser
+
+

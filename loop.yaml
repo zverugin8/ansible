@@ -1,0 +1,15 @@
+- name: Tasks for all servers
+  hosts: localhost
+  gather_facts: true
+  become: true
+  vars_files:
+    - loop_test.yaml
+  tasks:
+    - name: Show loop var
+      shell: |
+        echo {{ item }} 
+      loop: "{{ users }}"
+      register: result
+    - name: Display output
+      debug:
+        msg: "{{ result.results[0].stdout_lines }}"

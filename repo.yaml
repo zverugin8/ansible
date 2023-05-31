@@ -1,0 +1,13 @@
+
+- name: Description of the playbook
+  hosts: localhost
+  gather_facts: true
+- name: Description
+  # Comment
+  ansible.builtin.tempfile:
+    path: /tmp/test
+    prefix: ansible.
+    state: file
+    suffix: 
+
+

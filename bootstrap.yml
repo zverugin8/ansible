@@ -1,0 +1,51 @@
+- name: Tasks for all servers
+  hosts: all
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Add line to hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: ansible.xyzcorp.com 169.168.0.1
+        state: present
+    - name: Install elinks
+      ansible.builtin.package:
+        name: elinks
+        state: present
+    - name: Create user
+      ansible.builtin.user:
+        name: xyzcorp_audit
+        create_home: true
+    - name: Copy file motd
+      ansible.builtin.copy:
+        src: /home/ansible/motd
+        dest: /etc/
+        mode: '0664'
+    - name: Copy files issue
+      ansible.builtin.copy:
+        src: /home/ansible/issue
+        dest: /etc/
+        mode: '0664'
+- name: Tasks for network servers
+  hosts: network
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Install nmap-ncat
+      ansible.builtin.package:
+        name: nmap-ncat
+        state: present
+    - name: Create user
+      ansible.builtin.user:
+        name: xyzcorp_network
+        create_home: true
+- name: Tasks for sysadmin servers
+  hosts: sysadmin
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Copy file motd
+      ansible.builtin.copy:
+        src: /home/ansible/scripts.tgz
+        dest: /mnt/storage
+        mode: '0664'

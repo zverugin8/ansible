@@ -1,0 +1,33 @@
+
+---
+- name: Install wget
+  gather_facts: true
+  hosts:
+    - web
+  become: true
+  vars:
+    app: httpd
+  # Comment
+  tasks:
+    - name: Install app
+      ansible.builtin.yum:
+        name: "{{ app }}"
+        state: present
+    - name: Enable {{ app }}
+      ansible.builtin.systemd:
+        name: "{{ app }}"
+        state: started
+        enabled: yes
+    - name: get web archive
+      ansible.builtin.get_url:
+        url: http://repo.example.com/website.tgz
+        dest: /tmp/website.tgz
+
+    - name: Unarchive website
+      unarchive:
+        src: /tmp/website.tgz
+        dest: /var/www/html
+        remote_src: yes
+    
+        
+    

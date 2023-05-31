@@ -1,0 +1,18 @@
+# ansible localhost -m debug -a 'msg="{{ groups }}"'
+- name: Create sudoers file
+  hosts: localhost
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Deploy sudo template
+      ansible.builtin.template:
+        src: ./sudoers1.j2
+        dest: ./sudoers1
+        mode: '0666'
+        validate: /usr/sbin/visudo -cf %s
+    - name: Got groups
+      ansible.builtin.debug:
+        msg: "groups is {{ groups }}"
+
+
+

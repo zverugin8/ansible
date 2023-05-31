@@ -1,0 +1,18 @@
+# tasks file for baseline
+- name: Role baseline
+  hosts: webservers
+  gather_facts: true
+  tasks:
+    - name: configure motd
+      ansible.builtin.import_tasks:
+        file: motd.yaml
+    - name: Install nagios
+      ansible.builtin.import_tasks:
+        file: nagios.yaml
+    - name: Add an entry to /etc/hosts
+      ansible.builtin.import_tasks:
+        file: hosts.yaml   
+    - name: User add and ssh key add
+      ansible.builtin.import_tasks:
+        file: user.yaml
+    
