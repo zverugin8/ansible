@@ -1,0 +1,40 @@
+- name: Work with files
+  hosts: localhost
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Description
+      ansible.builtin.get_url:
+        attributes: string
+        backup: false
+        dest: /tmp/
+        mode: "0755"
+        url: http://software.xyzcorp.com/enigma.tgz
+        checksum: sha256:1234567890
+
+    - name: Unarchive
+      ansible.builtin.unarchive:
+        dest: /opt/
+        mode: "0755"
+        src: /tmp/enigma.tgz
+        remote_src: true
+
+    - name: Description
+      ansible.builtin.lineinfile:
+        line: CODE_RED
+        regexp: DEPLOY_CODE
+        path: /opt/enigma/details.txt
+
+    - name: Set the group ownership of the directory `/opt/enigma/secret/`
+      ansible.builtin.file:
+        follow: true
+        group: protected
+        mode: "0755"
+        path: /opt/enigma/secret/
+        recurse: true
+
+    - name: Delete the file `/opt/enigma/tmp/deployment-passwords.txt`
+      ansible.builtin.file:
+        follow: true
+        path: /opt/enigma/tmp/deployment-passwords.txt
+        state: absent
